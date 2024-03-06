@@ -4,7 +4,14 @@
 struct process
 {
 	int process_id;
+	int arrival_time;
+	int priority;
 	int time_to_live;
+	int Nmegabytes;
+	int Nprinters;
+	int Nscanners;
+	int Nmodems;
+	int Ncds;
 };
 
 struct node
@@ -19,5 +26,11 @@ struct queue
 	struct node* tail;
 	int quantum; //optional
 };
+
+void Qenqueue(struct queue *queue, struct node *new_node);
+
+struct node* Qdequeue(struct queue *queue);
+
+bool Qisempty(struct queue *queue);
 
 #endif
