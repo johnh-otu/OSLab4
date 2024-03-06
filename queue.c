@@ -3,10 +3,14 @@
 
 void Qenqueue(struct queue *queue, struct node *new_node)
 {
-	queue->tail->next = new_node;
-	queue->tail = new_node;
-	if (Qisempty(queue))
+	if (Qisempty(queue)) {
 		queue->head = new_node;
+		queue->tail = new_node;
+	}
+	else {	
+		queue->tail->next = new_node;
+		queue->tail = new_node;
+	}
 }
 
 struct node* Qdequeue(struct queue *queue)

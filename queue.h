@@ -1,6 +1,8 @@
 #ifndef QUEUE_HEADER_GUARD
 #define QUEUE_HEADER_GUARD
 
+#include "main.h"
+
 struct process
 {
 	int process_id;

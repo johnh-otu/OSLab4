@@ -1,6 +1,9 @@
 #include "main.h"
 #include "loader.h"
+#include "queue.h"
+#include "heap.h"
 
+struct heap process_heap;
 
 void load_queue_from_file(struct queue *job_queue) {
 	
@@ -10,17 +13,15 @@ void load_queue_from_file(struct queue *job_queue) {
 	
 	/* 
 	 * Jobs.txt format:
-	 * ============================================================
-	 * processID	timetolive	type		priority
-	 * INT		INT		0 -> RT		INT
-	 * [0, inf)	[0,inf)		1 -> UJ		[0,3]
+	 * ===================================================================================================================================
+	 * <arrival time>,	<priority>,	<processor time>,	<Mbytes>,	<#printers>,	<#scanners>,	<#modems>,	<#CDs>
+	 * INT			INT		INT			INT		INT		INT		INT		INT
+	 * [0, inf)		[0, 3]		[0, inf)		[0, 1024]	[0, 2]		[0, 1]		[0, 1]		[0, 2]
 	 *
-	 * example:
-	 * 1 2 1 2
-	 * 2 5 1 1
-	 * 3 1 0 0
-	 * 4 4 0 0
-	 * 5 2 1 1
+	 * examples:
+	 * 12,0,1,64,0,0,0,0
+	 * 12,1,2,128,1,0,0,1
+	 * 13,3,6,128,1,0,1,2
 	 *
 	 */
 
@@ -34,5 +35,52 @@ void load_queue_from_file(struct queue *job_queue) {
 		printf("file loaded\n");
 	}
 	
+	//Get process info from file and store in N buckets, where N is the max arrival time for all processes in jobs.txt
+	//Each process is stored in a bucket according to their arrival time
+
+	struct process temp_process;
+	Hinit(&process_heap);
+
+	int id_iterator = 1;
+
+	while(1) {
+		temp_process.process_id = id_iterator++;
+		fscanf(fp, "%d,%d,%d,%d,%d,%d,%d,%d ", &temp_process.arrival_time, &temp_process.priority, &temp_process.time_to_live, &temp_process.Nmegabytes, &temp_process.Nprinters, &temp_process.Nscanners, &temp_process.Nmodems, &temp_process.Ncds);
+
+		Hinsert(&process_heap, &temp_process);
+		//Hprint(&process_heap);
+
+		if (feof(fp)) //if end of file, finished reading
+			break;
+
+	}
+	
 	fclose(fp);
+	printf("file read and closed\n");
+	
+	int total_processes = process_heap.size;
+	Hsort(&process_heap);
+	//Hprint(&process_heap);
+
+	//fork and use child
+	//child:
+	//	after each time interval,
+	//	enqueue all processes where process->arrival_time == time interval;
+
+	int i = 0;
+	for (int t = 0; t < process_heap.head[total_processes - 1].arrival_time + 1; t++)
+	{
+		temp_process = process_heap.head[i];
+		printf("%d:", t);
+		while(process_heap.head[i].arrival_time == t)
+		{
+			printf(" %d", process_heap.head[i].process_id);
+			i++;
+			if (i >= total_processes)
+				break;
+		}
+		printf("\n");
+		if (i >= total_processes)
+			break;
+	}
 }
