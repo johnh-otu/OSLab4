@@ -17,6 +17,7 @@ struct queue
 { 
 	struct node* head;
 	struct node* tail;
+	int quantum; //optional
 };
 
 #endif
