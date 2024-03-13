@@ -1,8 +1,14 @@
 #ifndef LOADER_HEADER_GUARD
 #define LOADER_HEADER_GUARD
 
+#include "main.h"
 #include "queue.h"
 
-void load_queue_from_file(struct queue *job_queue);
+struct thread_data {
+	struct queue* job_queue;
+	pthread_mutex_t* lock;
+};
+
+void* load_queue_from_file(void *args);
 
 #endif

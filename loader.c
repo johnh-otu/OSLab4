@@ -5,8 +5,14 @@
 
 struct heap process_heap;
 
-void load_queue_from_file(struct queue *job_queue) {
+void *load_queue_from_file(void *args) {
 	
+	struct queue* job_queue = ((struct thread_data*)args)->job_queue;
+	pthread_mutex_t *lock = ((struct thread_data*)args)->lock;
+	printf("job queue loaded successfully: %p\n", job_queue);
+
+	pthread_mutex_lock(lock);
+	printf("lock taken, loading can start\n");
 	printf("loading...\n");
 	
 	//load from jobs.txt
@@ -29,7 +35,7 @@ void load_queue_from_file(struct queue *job_queue) {
 
 	if (fp == NULL) {
 		printf("null file\n");
-		return;
+		return NULL;
 	}
 	else {
 		printf("file loaded\n");
@@ -57,7 +63,10 @@ void load_queue_from_file(struct queue *job_queue) {
 	
 	fclose(fp);
 	printf("file read and closed\n");
-	
+	sleep(1);
+	pthread_mutex_unlock(lock);
+	printf("lock released, loading ended\n");
+
 	int total_processes = process_heap.size;
 	Hsort(&process_heap);
 	//Hprint(&process_heap);
@@ -83,4 +92,5 @@ void load_queue_from_file(struct queue *job_queue) {
 		if (i >= total_processes)
 			break;
 	}
+	return NULL;
 }
