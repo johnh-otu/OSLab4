@@ -7,6 +7,7 @@
 | loader.c/loader.h | Loads jobs from jobs.txt and puts them in dispatch queue on arrival time                 |
 | heap.c/heap.h     | Adds functionality for heaps; used in loader.c                                           |
 | queue.c/queue.h   | Adds functionality for queues; used to represent waiting queues in the dispatcher system |
+| scheduler.c/scheduler.h | Takes jobs from dispatch queue and sorts them into other queues based on priority |
 
 ## Lab Manual
 The Hypothetical Operating System Testbed (HOST) is a multiprogramming system with a
