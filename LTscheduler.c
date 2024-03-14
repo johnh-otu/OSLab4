@@ -7,9 +7,6 @@ void *LTscheduler(void* args)
 	struct queue* job_queue = ((struct LTscheduler_thread_data*)args)->job_queue;
 	struct queue* RT_queue = ((struct LTscheduler_thread_data*)args)->RT_queue;
 	struct queue* UJ_queue = ((struct LTscheduler_thread_data*)args)->UJ_queue;
-	struct queue* P1_queue = ((struct LTscheduler_thread_data*)args)->P1_queue;
-	struct queue* P2_queue = ((struct LTscheduler_thread_data*)args)->P2_queue;
-	struct queue* P3_queue = ((struct LTscheduler_thread_data*)args)->P3_queue;
 	pthread_mutex_t* lock = ((struct LTscheduler_thread_data*)args)->lock;
 	pthread_cond_t* loading_finished = ((struct LTscheduler_thread_data*)args)->condition;
 	int *max_load_time = ((struct LTscheduler_thread_data*)args)->max_load_time;
@@ -25,16 +22,18 @@ void *LTscheduler(void* args)
 		//pop from job_queue
 		temp = Qdequeue(job_queue);
 		
-		/*
+		
 		if (temp != NULL)
 		{
-			printf("S%d: pid:%d priority:%d\n", t, temp->data->process_id, temp->data->priority);
+			printf("LTS%d: pid:%d priority:%d\n", t, temp->data->process_id, temp->data->priority);
+			
+			if (temp->data->priority > 0)
+				Qenqueue(UJ_queue, temp);
+			else
+				Qenqueue(RT_queue, temp);
 		}
 		else
-			printf("S%d: \n", t);
-		*/
-
-		//TODO: sort into other queue based on priority
+			printf("LTS%d: \n", t);
 		
 		//Qheadinfo(job_queue);
 
