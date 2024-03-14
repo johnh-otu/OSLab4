@@ -14,12 +14,9 @@ void *scheduler(void* args)
 	pthread_cond_t* loading_finished = ((struct scheduler_thread_data*)args)->condition;
 	int *max_load_time = ((struct scheduler_thread_data*)args)->max_load_time;
 
-	printf("scheduler created\n");
+	printf("scheduler called\n");
 	pthread_mutex_lock(lock); //take lock first
-	printf("lock taken and released, now waiting...\n");
 	pthread_cond_wait(loading_finished, lock); //release lock and wait for loader to finish loading
-
-	printf("condition met, scheduler starting...\n");
 
 	int t = 0;
 	struct node* temp;
@@ -28,27 +25,23 @@ void *scheduler(void* args)
 		//pop from job_queue
 		temp = Qdequeue(job_queue);
 		
+		/*
 		if (temp != NULL)
 		{
 			printf("S%d: pid:%d priority:%d\n", t, temp->data->process_id, temp->data->priority);
-			//free(temp); //TODO: remove this once sorting is implemented
 		}
 		else
 			printf("S%d: \n", t);
+		*/
 
-		//sort into other queue based on priority
-		Qheadinfo(job_queue);
+		//TODO: sort into other queue based on priority
+		
+		//Qheadinfo(job_queue);
 
 		sleep(1); //simulate tick
 		t++;
 	}
 	
 	printf("NO MORE PROCESSES\n");	
-
-	printf("scheduler finished, sending signal\n");
-	pthread_mutex_lock(lock);
-	pthread_cond_signal(loading_finished);
-	printf("condition signal sent, goodbye!\n");
-	pthread_mutex_unlock(lock);
 	return NULL;
 }
