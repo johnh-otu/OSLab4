@@ -4,7 +4,7 @@
 #include "main.h"
 #include "queue.h"
 
-struct scheduler_thread_data {
+struct LTscheduler_thread_data {
 	struct queue* job_queue; //job dispatch list
 	struct queue* RT_queue; //real-time processes
 	struct queue* UJ_queue; //user job queue
@@ -16,6 +16,6 @@ struct scheduler_thread_data {
 	int* max_load_time;
 };
 
-void *scheduler(void* args);
+void *LTscheduler(void* args);
 
 #endif

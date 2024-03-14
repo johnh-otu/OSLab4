@@ -1,7 +1,7 @@
 #include "main.h"
 #include "queue.h"
 #include "loader.h"
-#include "scheduler.h"
+#include "LTscheduler.h"
 
 struct queue job_dispatch_list;
 struct queue RT_queue; //real-time processes
@@ -30,7 +30,7 @@ int main() {
 	P3_queue.lock = &P3_lock;
 
 	//load job dispatch list from jobs.txt
-	pthread_t tid_loader, tid_scheduler;
+	pthread_t tid_loader, tid_LTscheduler;
 	int max_load_time = 0;
 
 	//prep loader thread
@@ -40,27 +40,29 @@ int main() {
 	loader_data->condition = &loading_finished;
 	loader_data->max_load_time = &max_load_time;
 
-	//prep scheduler thread
-	struct scheduler_thread_data* scheduler_data = malloc(sizeof(struct scheduler_thread_data));
-	scheduler_data->job_queue = &job_dispatch_list;
-	scheduler_data->RT_queue = &RT_queue;
-	scheduler_data->UJ_queue = &UJ_queue;
+	//prep long-term scheduler thread
+	struct LTscheduler_thread_data* LTscheduler_data = malloc(sizeof(struct LTscheduler_thread_data));
+	LTscheduler_data->job_queue = &job_dispatch_list;
+	LTscheduler_data->RT_queue = &RT_queue;
+	LTscheduler_data->UJ_queue = &UJ_queue;
+	/*
 	scheduler_data->P1_queue = &P1_queue;
 	scheduler_data->P2_queue = &P2_queue;
 	scheduler_data->P3_queue = &P3_queue;
-	scheduler_data->lock = &lock;
-	scheduler_data->condition = &loading_finished;
-	scheduler_data->max_load_time = &max_load_time;
+	*/
+	LTscheduler_data->lock = &lock;
+	LTscheduler_data->condition = &loading_finished;
+	LTscheduler_data->max_load_time = &max_load_time;
 
 	//create threads
-	pthread_create(&tid_scheduler, NULL, scheduler, (void *)scheduler_data);
+	pthread_create(&tid_LTscheduler, NULL, LTscheduler, (void *)LTscheduler_data);
 	sleep(1);
 	pthread_create(&tid_loader, NULL, load_queue_from_file, (void *)loader_data);
 
 	//join threads
 	pthread_join(tid_loader, NULL);
-	pthread_join(tid_scheduler, NULL);
+	pthread_join(tid_LTscheduler, NULL);
 
 	free(loader_data);
-	free(scheduler_data);
+	free(LTscheduler_data);
 }
