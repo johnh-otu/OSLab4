@@ -1,5 +1,35 @@
 # SOFE3950U Operating Systems - Lab 4: The HOST Dispatcher
 ## Code Organization
+
+```bash
+.
+├── HOST.exe
+├── Makefile
+├── README.md
+├── dispatcher.exe
+├── jobs.txt
+└── src
+    ├── data_structures
+    │   ├── heap.c
+    │   ├── heap.h
+    │   ├── queue.c
+    │   └── queue.h
+    ├── dispatcher
+    │   ├── colours.h
+    │   ├── dispatcher.c
+    │   └── dispatcher.h
+    ├── loader
+    │   ├── loader.c
+    │   └── loader.h
+    ├── main.c
+    ├── main.h
+    └── schedulers
+        ├── LTscheduler.c
+        ├── LTscheduler.h
+        ├── MTscheduler.c
+        └── MTscheduler.h
+```
+
 | File              | Description                                                                              |
 |-------------------|------------------------------------------------------------------------------------------|
 | main.c/main.h     | The main function and libraries that will be used by the whole program                   |
