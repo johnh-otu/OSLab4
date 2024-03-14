@@ -27,6 +27,7 @@ struct queue
 	struct node* head;
 	struct node* tail;
 	int quantum; //optional
+	pthread_mutex_t* lock;
 };
 
 void Qenqueue(struct queue *queue, struct node *new_node);
@@ -34,5 +35,8 @@ void Qenqueue(struct queue *queue, struct node *new_node);
 struct node* Qdequeue(struct queue *queue);
 
 bool Qisempty(struct queue *queue);
+
+void Qwalk (struct queue *queue);
+void Qheadinfo(struct queue *queue);
 
 #endif

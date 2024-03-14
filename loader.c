@@ -7,11 +7,15 @@ struct heap process_heap;
 
 void *load_queue_from_file(void *args) {
 	
-	struct queue* job_queue = ((struct thread_data*)args)->job_queue;
-	pthread_mutex_t *lock = ((struct thread_data*)args)->lock;
+	printf("loader called\n");	
+	struct queue* job_queue = ((struct loader_thread_data*)args)->job_queue;
+	pthread_mutex_t *lock = ((struct loader_thread_data*)args)->lock;
+	pthread_cond_t *loading_finished = ((struct loader_thread_data*)args)->condition;
+	int *max_load_time = ((struct loader_thread_data*)args)->max_load_time;
+
 	printf("job queue loaded successfully: %p\n", job_queue);
 
-	pthread_mutex_lock(lock);
+	pthread_mutex_lock(lock); //take lock once released
 	printf("lock taken, loading can start\n");
 	printf("loading...\n");
 	
@@ -62,14 +66,15 @@ void *load_queue_from_file(void *args) {
 	}
 	
 	fclose(fp);
-	printf("file read and closed\n");
-	sleep(1);
-	pthread_mutex_unlock(lock);
-	printf("lock released, loading ended\n");
-
+	
 	int total_processes = process_heap.size;
 	Hsort(&process_heap);
-	//Hprint(&process_heap);
+	Hprint(&process_heap);
+	
+	printf("file read and closed\n");
+	pthread_cond_signal(loading_finished); //tell scheduler loading is finished
+	pthread_mutex_unlock(lock);
+	printf("condition signal sent, loading ended\n");
 
 	//fork and use child
 	//child:
@@ -77,20 +82,35 @@ void *load_queue_from_file(void *args) {
 	//	enqueue all processes where process->arrival_time == time interval;
 
 	int i = 0;
-	for (int t = 0; t < process_heap.head[total_processes - 1].arrival_time + 1; t++)
+	*max_load_time = process_heap.head[total_processes - 1].arrival_time;
+	
+	for (int t = 0; t < *max_load_time + 1; t++)
 	{
-		temp_process = process_heap.head[i];
-		printf("%d:", t);
+		printf("L%d:", t);
 		while(process_heap.head[i].arrival_time == t)
 		{
 			printf(" %d", process_heap.head[i].process_id);
+			struct node* temp = malloc(sizeof(struct node));
+			temp->data = &process_heap.head[i];
+			temp->next = NULL;
+
+			Qenqueue(job_queue,temp); 
+			
 			i++;
 			if (i >= total_processes)
 				break;
 		}
 		printf("\n");
+		Qheadinfo(job_queue);
 		if (i >= total_processes)
 			break;
+
+		sleep(1); //simulate tick
 	}
+
+	printf("loader finished, waiting...\n");
+	pthread_mutex_lock(lock);
+	pthread_cond_wait(loading_finished, lock);
+	printf("condition met, goodbye!\n");
 	return NULL;
 }
