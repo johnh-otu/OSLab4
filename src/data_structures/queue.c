@@ -1,4 +1,4 @@
-#include "main.h"
+#include "../main.h"
 #include "queue.h"
 
 void Qenqueue(struct queue *queue, struct node *new_node)

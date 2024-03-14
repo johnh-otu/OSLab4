@@ -1,8 +1,8 @@
 #ifndef LT_SCHEDULER_HEADER_GUARD
 #define LT_SCHEDULER_HEADER_GUARD
 
-#include "main.h"
-#include "queue.h"
+#include "../main.h"
+#include "../data_structures/queue.h"
 
 struct LTscheduler_thread_data {
 	struct queue* job_queue; //job dispatch list

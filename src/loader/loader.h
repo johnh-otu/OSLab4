@@ -1,8 +1,8 @@
 #ifndef LOADER_HEADER_GUARD
 #define LOADER_HEADER_GUARD
 
-#include "main.h"
-#include "queue.h"
+#include "../main.h"
+#include "../data_structures/queue.h"
 
 struct loader_thread_data {
 	struct queue* job_queue;

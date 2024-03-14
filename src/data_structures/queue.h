@@ -1,7 +1,7 @@
 #ifndef QUEUE_HEADER_GUARD
 #define QUEUE_HEADER_GUARD
 
-#include "main.h"
+#include "../main.h"
 
 struct process
 {

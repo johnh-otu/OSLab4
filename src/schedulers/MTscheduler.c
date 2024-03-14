@@ -1,6 +1,6 @@
-#include "main.h"
+#include "../main.h"
 #include "MTscheduler.h"
-#include "queue.h"
+#include "../data_structures/queue.h"
 
 void *MTscheduler(void* args)
 {

@@ -1,8 +1,8 @@
 #ifndef MT_SCHEDULER_HEADER_GUARD
 #define MT_SCHEDULER_HEADER_GUARD
 
-#include "main.h"
-#include "queue.h"
+#include "../main.h"
+#include "../data_structures/queue.h"
 
 struct MTscheduler_thread_data {
 	struct queue* UJ_queue; //user job queue

@@ -1,5 +1,5 @@
 #include "queue.h"
-#include "main.h"
+#include "../main.h"
 #include "heap.h"
 
 void Hinit(struct heap* h)

@@ -1,8 +1,8 @@
 #include "main.h"
-#include "queue.h"
-#include "loader.h"
-#include "LTscheduler.h"
-#include "MTscheduler.h"
+#include "data_structures/queue.h"
+#include "loader/loader.h"
+#include "schedulers/LTscheduler.h"
+#include "schedulers/MTscheduler.h"
 
 struct queue job_dispatch_list;
 struct queue RT_queue; //real-time processes

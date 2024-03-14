@@ -1,6 +1,6 @@
-#include "main.h"
+#include "../main.h"
 #include "LTscheduler.h"
-#include "queue.h"
+#include "../data_structures/queue.h"
 
 void *LTscheduler(void* args)
 {

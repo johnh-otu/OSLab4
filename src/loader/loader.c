@@ -1,7 +1,7 @@
-#include "main.h"
+#include "../main.h"
 #include "loader.h"
-#include "queue.h"
-#include "heap.h"
+#include "../data_structures/queue.h"
+#include "../data_structures/heap.h"
 
 struct heap process_heap;
 

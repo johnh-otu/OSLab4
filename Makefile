@@ -1,8 +1,8 @@
-dispatcher: main.c loader.c queue.c heap.c LTscheduler.c MTscheduler.c dispatcher.c
-	gcc main.c loader.c queue.c heap.c LTscheduler.c MTscheduler.c -Wall -o HOST.exe
-	gcc -Wall -std=gnu99 dispatcher.c -o dispatcher.exe
-debug: main.c loader.c queue.c heap.c LTscheduler.c MTscheduler.c dispatcher.c
-	gcc main.c loader.c queue.c heap.c LTscheduler.c MTscheduler.c -Wall -Wextra -g -o HOST.exe
-	gcc -Wall -Wextra -std=gnu99 dispatcher.c -g -o dispatcher.exe
-test: testscript.c queue.c
-	gcc testscript.c queue.c -Wall -g -o test
+dispatcher: src/main.c src/loader/loader.c src/data_structures/queue.c src/data_structures/heap.c src/schedulers/LTscheduler.c src/schedulers/MTscheduler.c src/dispatcher/dispatcher.c
+	gcc src/main.c src/loader/loader.c src/data_structures/queue.c src/data_structures/heap.c src/schedulers/LTscheduler.c src/schedulers/MTscheduler.c -Wall -o HOST.exe
+	gcc -Wall -std=gnu99 src/dispatcher/dispatcher.c -o dispatcher.exe
+debug: src/main.c src/loader/loader.c src/data_structures/queue.c src/data_structures/heap.c src/schedulers/LTscheduler.c src/schedulers/MTscheduler.c src/dispatcher/dispatcher.c
+	gcc src/main.c src/loader/loader.c src/data_structures/queue.c src/data_structures/heap.c src/schedulers/LTscheduler.c src/schedulers/MTscheduler.c -Wall -Wextra -g -o HOST.exe
+	gcc -Wall -Wextra -std=gnu99 src/dispatcher/dispatcher.c -g -o dispatcher.exe
+test: test/testscript.c src/data_structures/queue.c
+	gcc test/testscript.c src/data_structures/queue.c -Wall -g -o test.exe
