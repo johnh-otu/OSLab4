@@ -14,6 +14,8 @@ struct process
 	int Nscanners;
 	int Nmodems;
 	int Ncds;
+	bool suspended;
+	int address;
 };
 
 struct node

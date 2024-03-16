@@ -3,6 +3,7 @@
 #include "loader/loader.h"
 #include "schedulers/LTscheduler.h"
 #include "schedulers/MTscheduler.h"
+#include "schedulers/STscheduler.h"
 
 struct queue job_dispatch_list;
 struct queue RT_queue; //real-time processes
@@ -31,7 +32,7 @@ int main() {
 	P3_queue.lock = &P3_lock;
 
 	//declare thread ids
-	pthread_t tid_loader, tid_LTscheduler, tid_MTscheduler;
+	pthread_t tid_loader, tid_LTscheduler, tid_MTscheduler, tid_STscheduler;
 	
 	//declare/init max_load_time
 	int max_load_time = 0; //max arrival time value, dynamically set by loader after file is read
@@ -59,19 +60,30 @@ int main() {
 	MTscheduler_data->P2_queue = &P2_queue;
 	MTscheduler_data->P3_queue = &P3_queue;
 
+	//prep short-term scheduler thread
+	struct STscheduler_thread_data* STscheduler_data = malloc(sizeof(struct STscheduler_thread_data));
+	STscheduler_data->RT_queue = &RT_queue;
+	STscheduler_data->UJ_queue = &UJ_queue;
+	STscheduler_data->P1_queue = &P1_queue;
+	STscheduler_data->P2_queue = &P2_queue;
+	STscheduler_data->P3_queue = &P3_queue;
+
 	//create threads
 	pthread_create(&tid_LTscheduler, NULL, LTscheduler, (void *)LTscheduler_data);
 	sleep(1);
 	pthread_create(&tid_loader, NULL, load_queue_from_file, (void *)loader_data);
 	pthread_create(&tid_MTscheduler, NULL, MTscheduler, (void *)MTscheduler_data);
+	pthread_create(&tid_STscheduler, NULL, STscheduler, (void *)STscheduler_data);
 
 	//join threads
 	pthread_join(tid_loader, NULL);
 	pthread_join(tid_LTscheduler, NULL);
 	pthread_join(tid_MTscheduler, NULL);
+	pthread_join(tid_STscheduler, NULL);
 
 	//free pointers
 	free(loader_data);
 	free(LTscheduler_data);
 	free(MTscheduler_data);
+	free(STscheduler_data);
 }

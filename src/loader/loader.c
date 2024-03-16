@@ -55,6 +55,7 @@ void *load_queue_from_file(void *args) {
 		temp_process = (struct process*)malloc(sizeof(struct process));
 		
 		temp_process->process_id = id_iterator++;
+		temp_process->suspended = false;
 		fscanf(fp, "%d,%d,%d,%d,%d,%d,%d,%d ", &(temp_process->arrival_time), &(temp_process->priority), &(temp_process->time_to_live), &(temp_process->Nmegabytes), &(temp_process->Nprinters), &(temp_process->Nscanners), &(temp_process->Nmodems), &(temp_process->Ncds));
 
 		Hinsert(&process_heap, temp_process); //insert process into heap

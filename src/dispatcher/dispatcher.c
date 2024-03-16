@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
 	if (argc > 2 || (argc == 2 && !isdigit((int)argv[1][0])))
 	{
 		printf("usage: %s [seconds]\n", argv[0]);
+		fflush(stdout);
 		exit(1);
 	}
 
