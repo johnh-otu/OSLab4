@@ -24,6 +24,7 @@ pthread_mutex_t P3_lock = PTHREAD_MUTEX_INITIALIZER;
 
 int Njobs = 0;
 int Ncompletedjobs = 0;
+bool DONE_FLAG = false;
 
 int main() {
 	//initialize queue locks
@@ -63,6 +64,7 @@ int main() {
 	MTscheduler_data->P1_queue = &P1_queue;
 	MTscheduler_data->P2_queue = &P2_queue;
 	MTscheduler_data->P3_queue = &P3_queue;
+	MTscheduler_data->flag = &DONE_FLAG;
 
 	//prep short-term scheduler thread
 	struct STscheduler_thread_data* STscheduler_data = malloc(sizeof(struct STscheduler_thread_data));
@@ -72,6 +74,7 @@ int main() {
 	STscheduler_data->P2_queue = &P2_queue;
 	STscheduler_data->P3_queue = &P3_queue;
 	STscheduler_data->num_completed = &Ncompletedjobs;
+	STscheduler_data->flag = &DONE_FLAG;
 
 	//create threads
 	pthread_create(&tid_LTscheduler, NULL, LTscheduler, (void *)LTscheduler_data);
@@ -81,13 +84,11 @@ int main() {
 	pthread_create(&tid_STscheduler, NULL, STscheduler, (void *)STscheduler_data);
 
 	//join threads
-	while (Ncompletedjobs != Njobs || Njobs == 0) {sleep(1);} //wait for all jobs to complete
-	sleep(1); //give schedulers extra time to wrap up
 	pthread_join(tid_loader, NULL);
 	pthread_join(tid_LTscheduler, NULL);
-	//pthread_cancel(tid_MTscheduler);
+	while (Ncompletedjobs != Njobs || Njobs == 0) {sleep(1);} //wait for all jobs to complete
+	DONE_FLAG = true;
 	pthread_join(tid_MTscheduler, NULL);
-	//pthread_cancel(tid_STscheduler);
 	pthread_join(tid_STscheduler, NULL);
 
 	//free pointers
@@ -95,4 +96,6 @@ int main() {
 	free(LTscheduler_data);
 	free(MTscheduler_data);
 	free(STscheduler_data);
+
+	printf("HOST has processed all provided jobs. Goodbye!\n");
 }

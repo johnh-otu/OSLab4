@@ -9,6 +9,7 @@ struct MTscheduler_thread_data {
 	struct queue* P1_queue;
 	struct queue* P2_queue;
 	struct queue* P3_queue;
+	bool* flag;
 	//pthread_mutex_t* lock;
 	//pthread_cond_t* condition;
 	//int* max_load_time;

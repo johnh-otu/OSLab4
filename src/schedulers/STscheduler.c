@@ -19,12 +19,13 @@ void *STscheduler(void* args)
 	ST_P2_queue = ((struct STscheduler_thread_data*)args)->P2_queue;
 	ST_P3_queue = ((struct STscheduler_thread_data*)args)->P3_queue;
 	total_completed = ((struct STscheduler_thread_data*)args)->num_completed;
+	bool* DONE_FLAG = ((struct STscheduler_thread_data*)args)->flag;
 
 	printf("short-term scheduler called\n");
 
 	struct node* current_proc_node;
 
-	while (true) {
+	while (!(*DONE_FLAG)) {
 		
 		current_proc_node = NULL;
 

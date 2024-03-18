@@ -11,6 +11,7 @@ struct STscheduler_thread_data {
 	struct queue* P2_queue;
 	struct queue* P3_queue;
 	int* num_completed;
+	bool* flag;
 };
 
 void *STscheduler(void* args);

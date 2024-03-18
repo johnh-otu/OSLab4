@@ -8,6 +8,7 @@ void *MTscheduler(void* args)
 	struct queue* P1_queue = ((struct MTscheduler_thread_data*)args)->P1_queue;
 	struct queue* P2_queue = ((struct MTscheduler_thread_data*)args)->P2_queue;
 	struct queue* P3_queue = ((struct MTscheduler_thread_data*)args)->P3_queue;
+	bool* DONE_FLAG = ((struct MTscheduler_thread_data*)args)->flag;
 	//pthread_mutex_t* lock = ((struct scheduler_thread_data*)args)->lock;
 	//pthread_cond_t* loading_finished = ((struct scheduler_thread_data*)args)->condition;
 	//int *max_load_time = ((struct scheduler_thread_data*)args)->max_load_time;
@@ -18,7 +19,7 @@ void *MTscheduler(void* args)
 
 	int t = 0;
 	struct node* temp;
-	while(true)
+	while(!(*DONE_FLAG))
 	{
 		//pop from job_queue
 		temp = Qdequeue(UJ_queue);
