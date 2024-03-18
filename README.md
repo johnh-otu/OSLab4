@@ -42,7 +42,7 @@
 | File              | Description                                                                              |
 |-------------------|------------------------------------------------------------------------------------------|
 | main.c/main.h     | The main function and libraries that will be used by the whole program                   |
-| jobs.txt          | Text file holding all jobs to be executed; see "Dispatch List"                                    |
+| jobs.txt          | Example text file holding all jobs to be executed; see "Dispatch List"                                    |
 | loader.c/loader.h | Loads jobs from jobs.txt and puts them in dispatch queue on arrival time                 |
 | heap.c/heap.h     | Adds functionality for heaps; used in loader.c                                           |
 | queue.c/queue.h   | Adds functionality for queues; used to represent waiting queues in the dispatcher system |
