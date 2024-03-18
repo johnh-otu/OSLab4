@@ -27,6 +27,22 @@ int Ncompletedjobs = 0;
 bool DONE_FLAG = false;
 
 int main() {
+
+	//get dispatch file path and check
+	char file_path[MAXPATHSIZE];
+	FILE *fp;
+
+	printf("Please enter a file path for the dispatch list: ");
+	scanf("%s", file_path);
+	fp = fopen(file_path, "r");
+
+	if (fp == NULL) {
+		printf("Failed to open file or file does not exist.\n");
+		exit(EXIT_FAILURE);
+	} else {
+		fclose(fp); //file can be opened
+	}
+
 	//initialize queue locks
 	job_dispatch_list.lock = &jdl_lock;
 	RT_queue.lock = &RT_lock;
@@ -48,6 +64,7 @@ int main() {
 	loader_data->condition = &loading_finished;
 	loader_data->max_load_time = &max_load_time;
 	loader_data->num_processes = &Njobs;
+	strcpy(loader_data->path, file_path);
 
 	//prep long-term scheduler thread
 	struct LTscheduler_thread_data* LTscheduler_data = malloc(sizeof(struct LTscheduler_thread_data));

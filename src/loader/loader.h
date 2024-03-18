@@ -10,6 +10,7 @@ struct loader_thread_data {
 	pthread_cond_t* condition;
 	int* max_load_time;
 	int* num_processes;
+	char path[MAXPATHSIZE];
 };
 
 void* load_queue_from_file(void *args);

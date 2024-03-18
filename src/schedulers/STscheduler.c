@@ -3,6 +3,11 @@
 #include "../data_structures/queue.h"
 
 int mem[TOTALMEMORYMB] = {0};
+int memavailable = TOTALMEMORYMB;
+int printers = NPRINTERS;
+int scanners = NSCANNERS;
+int modems = NMODEMS;
+int cds = NCDDRIVES;
 
 struct queue* ST_RT_queue;
 struct queue* ST_UJ_queue;
@@ -231,13 +236,83 @@ bool emptyRTqueue(struct node* proc_node, int t)
 
 bool allocateMemoryAndResources(struct node* proc_node)
 {
-	return true;
+	int mem_size = proc_node->data->Nmegabytes;
+	
+	if (proc_node->data->priority > 0) { //not realtime
+
+		//check resources
+
+		if (printers - proc_node->data->Nprinters < 0)
+			return false; //not enough printers
+		if (scanners - proc_node->data->Nscanners < 0)
+			return false; //not enough scanners
+		if (modems - proc_node->data->Nmodems < 0)
+			return false; //not enough modems
+		if (cds - proc_node->data->Ncds < 0)
+			return false; //not enough cddrives
+	
+		//check for memory
+	
+		if (memavailable - mem_size < MAXRTMEMORY)
+			return false; //not enough memory
+		
+	}
+
+	//search for memory space
+	int free_mem_count = 0;
+	int start_index = 0;
+
+	for (int i = 0; i < TOTALMEMORYMB; ++i) {
+		if (mem[i] == 0) {
+			free_mem_count++;
+			if (free_mem_count == mem_size) { //found a spot
+				start_index = i - mem_size + 1;
+				proc_node->data->address = start_index;
+					
+				//fill memory
+				for (int j = start_index; j < start_index + mem_size; j++) {mem[j] = 1;}
+				memavailable -= mem_size;
+
+				//take resources
+				if (proc_node->data->priority > 0) {
+					printers -= proc_node->data->Nprinters;
+					scanners -= proc_node->data->Nscanners;
+					modems -= proc_node->data->Nmodems;
+					cds -= proc_node->data->Ncds;
+				}
+
+				return true;
+			}
+		}
+		else {
+			free_mem_count = 0;
+		}
+	}
+
+	//no memory available
+	return false;
 }
 
 void freeMemoryAndResources(struct node* proc_node)
 {
+	//free resources
+	if (proc_node->data->priority > 0) {
+		printers += proc_node->data->Nprinters;
+		scanners += proc_node->data->Nscanners;
+		modems += proc_node->data->Nmodems;
+		cds += proc_node->data->Ncds;
+	}
+	
+	//free memory
+	int start_address = proc_node->data->address;
+	int mem_size = proc_node->data->Nmegabytes;
+	for (int i = start_address; i < start_address + mem_size; i++)
+		mem[i] = 0;
+	memavailable += mem_size;
+
+	//mark completed and free / set to NULL
 	*total_completed = *total_completed + 1;
-	printf("Total completed: %d\n", *total_completed);
+	//printf("Total completed: %d\n", *total_completed);
 	//free(proc_node->data);
 	//free(proc_node);
 	proc_node = NULL;

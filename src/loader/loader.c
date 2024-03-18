@@ -13,6 +13,8 @@ void *load_queue_from_file(void *args) {
 	pthread_cond_t *loading_finished = ((struct loader_thread_data*)args)->condition;
 	int *max_load_time = ((struct loader_thread_data*)args)->max_load_time;
 	int *total_processes = ((struct loader_thread_data*)args)->num_processes;
+	char file_path[MAXPATHSIZE]; 
+	strcpy(file_path, ((struct loader_thread_data*)args)->path);
 
 	pthread_mutex_lock(lock); //take lock once released
 	printf("loading...\n");
@@ -33,11 +35,11 @@ void *load_queue_from_file(void *args) {
 	 *
 	 */
 
-	FILE *fp = fopen(FILENAME, "r");
+	FILE *fp = fopen(file_path, "r");
 
 	if (fp == NULL) {
-		printf("null file\n");
-		return NULL;
+		perror("Error opening file: ");
+		exit(EXIT_FAILURE);
 	}
 	else {
 		printf("file loaded\n");

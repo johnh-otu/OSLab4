@@ -1,8 +1,8 @@
 #include "dispatcher.h"
 #include "colours.h"
 
-char* colours[] = {RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE};
-#define N_COLOUR 7
+char* colours[] = {RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN};
+#define N_COLOUR 6
 #define NORMAL "\033[0m"
 char* current_colour;
 

@@ -9,7 +9,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define FILENAME "jobs.txt"
 #define QUANTUM1 2
 #define QUANTUM2 4
 #define NPRINTERS 2
@@ -18,5 +17,7 @@
 #define NCDDRIVES 2
 #define TOTALMEMORYMB 1024
 #define MAXRTMEMORY 64
+
+#define MAXPATHSIZE 100
 
 #endif
