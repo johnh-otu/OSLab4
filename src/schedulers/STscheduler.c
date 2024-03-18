@@ -55,7 +55,8 @@ void *STscheduler(void* args)
 				for (int t = 0; t < QUANTUM1 && t != current_proc_node->data->time_to_live; t++) 
 				{
 					sleep(1); //simulate tick;
-					emptyRTqueue(current_proc_node, t);
+					if (emptyRTqueue(current_proc_node, t))
+						continue;
 				}
 
 				if (current_proc_node->data->time_to_live <= QUANTUM1) { //end ofprocess				    
@@ -99,7 +100,8 @@ void *STscheduler(void* args)
 				for (int t = 0; t < QUANTUM2 && t != current_proc_node->data->time_to_live; t++) 
 				{
 					sleep(1); //simulate tick;
-					emptyRTqueue(current_proc_node, t);
+					if (emptyRTqueue(current_proc_node, t))
+						continue;
 				}
 
 				if (current_proc_node->data->time_to_live <= QUANTUM2) { //end ofprocess				    
@@ -143,7 +145,8 @@ void *STscheduler(void* args)
 				for (int t = 0; t < 1; t++) 
 				{
 					sleep(1); //simulate tick;
-					emptyRTqueue(current_proc_node, t);
+					if (emptyRTqueue(current_proc_node, t))
+						continue;
 					if (current_proc_node->data->time_to_live == 1)
 						break;
 				}
