@@ -22,6 +22,9 @@ pthread_mutex_t P1_lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t P2_lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t P3_lock = PTHREAD_MUTEX_INITIALIZER;
 
+int Njobs = 0;
+int Ncompletedjobs = 0;
+
 int main() {
 	//initialize queue locks
 	job_dispatch_list.lock = &jdl_lock;
@@ -43,6 +46,7 @@ int main() {
 	loader_data->lock = &lock;
 	loader_data->condition = &loading_finished;
 	loader_data->max_load_time = &max_load_time;
+	loader_data->num_processes = &Njobs;
 
 	//prep long-term scheduler thread
 	struct LTscheduler_thread_data* LTscheduler_data = malloc(sizeof(struct LTscheduler_thread_data));
@@ -67,6 +71,7 @@ int main() {
 	STscheduler_data->P1_queue = &P1_queue;
 	STscheduler_data->P2_queue = &P2_queue;
 	STscheduler_data->P3_queue = &P3_queue;
+	STscheduler_data->num_completed = &Ncompletedjobs;
 
 	//create threads
 	pthread_create(&tid_LTscheduler, NULL, LTscheduler, (void *)LTscheduler_data);
@@ -76,9 +81,13 @@ int main() {
 	pthread_create(&tid_STscheduler, NULL, STscheduler, (void *)STscheduler_data);
 
 	//join threads
+	while (Ncompletedjobs != Njobs || Njobs == 0) {sleep(1);} //wait for all jobs to complete
+	sleep(1); //give schedulers extra time to wrap up
 	pthread_join(tid_loader, NULL);
 	pthread_join(tid_LTscheduler, NULL);
+	//pthread_cancel(tid_MTscheduler);
 	pthread_join(tid_MTscheduler, NULL);
+	//pthread_cancel(tid_STscheduler);
 	pthread_join(tid_STscheduler, NULL);
 
 	//free pointers

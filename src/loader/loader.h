@@ -9,6 +9,7 @@ struct loader_thread_data {
 	pthread_mutex_t* lock;
 	pthread_cond_t* condition;
 	int* max_load_time;
+	int* num_processes;
 };
 
 void* load_queue_from_file(void *args);

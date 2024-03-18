@@ -23,10 +23,9 @@ void *MTscheduler(void* args)
 		//pop from job_queue
 		temp = Qdequeue(UJ_queue);
 		
-		
 		if (temp != NULL)
 		{
-			printf("MTS%d: pid:%d priority:%d\n", t, temp->data->process_id, temp->data->priority);
+			//printf("MTS%d: pid:%d priority:%d\n", t, temp->data->process_id, temp->data->priority);
 
 			if (temp->data->priority == 1)
 				Qenqueue(P1_queue, temp);
@@ -36,9 +35,9 @@ void *MTscheduler(void* args)
 				Qenqueue(P3_queue, temp);
 		}
 		else
-			printf("MTS%d: \n", t);
+			//printf("MTS%d: \n", t);
 		
-		//Qheadinfo(job_queue);
+		//Qheadinfo(UJ_queue);
 
 		sleep(1); //simulate tick
 		t++;

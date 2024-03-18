@@ -11,8 +11,8 @@ static int signal_SIGTSTP = FALSE;
 static int signal_SIGCONT = FALSE;
 
 static void sighandler(int);
-void dispatcherPrint(pid_t pid, char* string);
-void dispatcherPrintTick(pid_t pid, int tick);
+void dispatcherPrint(pid_t pid, int job_id, char* string);
+void dispatcherPrintTick(pid_t pid, int job_id, int tick);
 
 /********************************************************************/
 //         Based on the sigtrap.c file from labs 7 and 8            //
@@ -21,7 +21,7 @@ void dispatcherPrintTick(pid_t pid, int tick);
 int main(int argc, char* argv[]) 
 {
 	pid_t pid = getpid();
-	int i, cycle, rc;
+	int i, cycle, rc, job_id;
 	long clktck = sysconf(_SC_CLK_TCK);
 	struct tms t;
 	clock_t starttick, stoptick;
@@ -29,14 +29,12 @@ int main(int argc, char* argv[])
 
 	current_colour = colours[pid % N_COLOUR]; //select colour
 
-	if (argc > 2 || (argc == 2 && !isdigit((int)argv[1][0])))
+	if (argc > 3 || (argc == 2 && !isdigit((int)argv[1][0])) || (argc == 3 && !isdigit((int)argv[1][0]) && !isdigit((int)argv[2][0]) ))
 	{
-		printf("usage: %s [seconds]\n", argv[0]);
+		printf("usage: %s [seconds] [job_id]\n", argv[0]);
 		fflush(stdout);
 		exit(1);
 	}
-
-	dispatcherPrint(pid, "PROCESS START");
 
 	//connect signals to handler
 	signal(SIGINT, sighandler);
@@ -44,12 +42,15 @@ int main(int argc, char* argv[])
 	
 	rc = setpriority(PRIO_PROCESS, 0, 20); //lower process priority
 	cycle = argc < 2 ? 1 : atoi(argv[1]); //get tick count
+	job_id = argc < 3 ? pid : atoi(argv[2]); //get job_id
+
+	dispatcherPrint(pid, job_id, "PROCESS START");
 
 	for (i = 0; i < cycle;) {
 		
 		if (signal_SIGCONT) { //if continuing from previous suspension
 			signal_SIGCONT = FALSE;
-			dispatcherPrint(pid, "SIGCONT");
+			dispatcherPrint(pid, job_id, "SIGCONT");
 		}
 
 		//tick
@@ -58,16 +59,16 @@ int main(int argc, char* argv[])
 		stoptick = times (&t);
 
 		if (rc == 0 || (stoptick-starttick) > clktck/2) //print tick
-			dispatcherPrintTick(pid, ++i);
+			dispatcherPrintTick(pid, job_id, ++i);
 		
 		if (signal_SIGINT) { //if interrupt signal received
-			dispatcherPrint(pid, "SIGINT");
+			dispatcherPrint(pid, job_id, "SIGINT");
 			exit(0);
 		}
 
 		if (signal_SIGTSTP) { //if suspend signal received 
 			signal_SIGTSTP = FALSE;
-			dispatcherPrint(pid, "SIGTSTP");
+			dispatcherPrint(pid, job_id, "SIGTSTP");
 			sigemptyset (&mask); //unblock if necessary
 			sigaddset (&mask, SIGTSTP);
 			sigprocmask (SIG_UNBLOCK, &mask, NULL);
@@ -85,14 +86,21 @@ int main(int argc, char* argv[])
 
 /********************************************************************/
 
-void dispatcherPrint(pid_t pid, char* str)
+void dispatcherPrint(pid_t pid, int job_id, char* str)
 {
-	printf("%s%7d; %s%s\n", current_colour, (int)pid, str, WHITE);
+	if ((int)pid == job_id)
+		printf("%s%7d; %s%s\n", current_colour, (int)pid, str, WHITE);
+	else
+		printf("%s%7d) %7d; %s%s\n", current_colour, job_id, (int)pid, str, WHITE);
+	
 	fflush(stdout);
 }
-void dispatcherPrintTick(pid_t pid, int tick)
+void dispatcherPrintTick(pid_t pid, int job_id, int tick)
 {
-	printf("%s%7d; tick %d%s\n", current_colour, (int)pid, tick, WHITE);
+	if ((int)pid == job_id)
+		printf("%s%7d; tick %d%s\n", current_colour, (int)pid, tick, WHITE);
+	else
+		printf("%s%7d) %7d; %d%s\n", current_colour, job_id, (int)pid, tick, WHITE);
 }
 
 /********************************************************************/

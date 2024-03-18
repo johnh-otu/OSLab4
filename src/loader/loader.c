@@ -12,6 +12,7 @@ void *load_queue_from_file(void *args) {
 	pthread_mutex_t *lock = ((struct loader_thread_data*)args)->lock;
 	pthread_cond_t *loading_finished = ((struct loader_thread_data*)args)->condition;
 	int *max_load_time = ((struct loader_thread_data*)args)->max_load_time;
+	int *total_processes = ((struct loader_thread_data*)args)->num_processes;
 
 	pthread_mutex_lock(lock); //take lock once released
 	printf("loading...\n");
@@ -54,7 +55,8 @@ void *load_queue_from_file(void *args) {
 		
 		temp_process = (struct process*)malloc(sizeof(struct process));
 		
-		temp_process->process_id = id_iterator++;
+		temp_process->job_id = id_iterator++;
+		temp_process->process_id = 0;
 		temp_process->suspended = false;
 		fscanf(fp, "%d,%d,%d,%d,%d,%d,%d,%d ", &(temp_process->arrival_time), &(temp_process->priority), &(temp_process->time_to_live), &(temp_process->Nmegabytes), &(temp_process->Nprinters), &(temp_process->Nscanners), &(temp_process->Nmodems), &(temp_process->Ncds));
 
@@ -67,7 +69,7 @@ void *load_queue_from_file(void *args) {
 	}
 	fclose(fp);
 	
-	int total_processes = process_heap.size;
+	*total_processes = process_heap.size;
 	Hsort(&process_heap); //convert heap into array sorted by arrival time
 	//Hprint(&process_heap);
 	printf("file read and closed\n");
@@ -76,7 +78,7 @@ void *load_queue_from_file(void *args) {
 	pthread_mutex_unlock(lock);
 	
 	int i = 0;
-	*max_load_time = process_heap.head[total_processes - 1].arrival_time;
+	*max_load_time = process_heap.head[*total_processes - 1].arrival_time;
 	
 	for (int t = 0; t < *max_load_time + 1; t++) //each tick
 	{
@@ -96,14 +98,14 @@ void *load_queue_from_file(void *args) {
 			Qenqueue(job_queue,temp); 
 			
 			i++; //go to next job
-			if (i >= total_processes)
+			if (i >= *total_processes)
 				break; //end of process list
 		}
 		
 		//printf("\n");
 		//Qheadinfo(job_queue);
 
-		if (i >= total_processes)
+		if (i >= *total_processes)
 			break; //end of process list
 
 		sleep(1); //simulate tick

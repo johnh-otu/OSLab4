@@ -6,6 +6,7 @@
 struct process
 {
 	int process_id;
+	int job_id;
 	int arrival_time;
 	int priority;
 	int time_to_live;

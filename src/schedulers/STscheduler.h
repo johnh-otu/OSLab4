@@ -10,13 +10,14 @@ struct STscheduler_thread_data {
 	struct queue* P1_queue;
 	struct queue* P2_queue;
 	struct queue* P3_queue;
+	int* num_completed;
 };
 
 void *STscheduler(void* args);
 
 void executeProcess(struct process* proc);
 bool emptyRTqueue(struct node* proc_node, int t);
-bool allocateMemoryAndResources(struct process* proc);
-void freeMemoryAndResources(struct process* proc);
+bool allocateMemoryAndResources(struct node* proc_node);
+void freeMemoryAndResources(struct node* proc_node);
 
 #endif
