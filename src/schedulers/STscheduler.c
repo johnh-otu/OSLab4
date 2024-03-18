@@ -187,6 +187,9 @@ void executeProcess(struct process* proc)
 		kill(proc->process_id, SIGCONT);
 	}
 	else {
+		printf("Starting process %d - priority:%d, time-to-live:%d, memoryaddress: %x, memory size: %d, resources: p:%d,s:%d,m:%d,c:%d\n", proc->job_id, proc->priority, proc->time_to_live, proc->address, proc->Nmegabytes, proc->Nprinters, proc->Nscanners, proc->Nmodems, proc->Ncds);
+		fflush(stdout);
+
 		int pid = fork();
 
 		if (pid < 0)

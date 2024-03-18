@@ -25,16 +25,17 @@ void *LTscheduler(void* args)
 		
 		if (temp != NULL)
 		{
-			printf("LTS%d: pid:%d priority:%d\n", t, temp->data->process_id, temp->data->priority);
+			//printf("LTS%d: pid:%d priority:%d\n", t, temp->data->process_id, temp->data->priority);
 			
 			if (temp->data->priority > 0)
 				Qenqueue(UJ_queue, temp);
 			else
 				Qenqueue(RT_queue, temp);
 		}
-		else
-			printf("LTS%d: \n", t);
-		
+		else {
+			//printf("LTS%d: \n", t);
+		}
+
 		//Qheadinfo(job_queue);
 
 		sleep(1); //simulate tick
