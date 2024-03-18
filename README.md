@@ -1,12 +1,19 @@
 # SOFE3950U Operating Systems - Lab 4: The HOST Dispatcher
+
+## How to install / run
+1. Download code as zip file on a linux system (wsl works fine), then extract/unzip
+2. Open the new directory in a linux shell (bash, zsh, etc.)
+3. Run the "make" command in the directory
+4. Run HOST.exe once it's been built
+
 ## Code Organization
 
 ```bash
 .
-├── HOST.exe
+├── HOST.exe [git ignored]
 ├── Makefile
 ├── README.md
-├── dispatcher.exe
+├── dispatcher.exe [git ignored]
 ├── jobs.txt
 └── src
     ├── data_structures
@@ -27,19 +34,22 @@
         ├── LTscheduler.c
         ├── LTscheduler.h
         ├── MTscheduler.c
-        └── MTscheduler.h
+        ├── MTscheduler.h
+        ├── STscheduler.c
+        └── STscheduler.h
 ```
 
 | File              | Description                                                                              |
 |-------------------|------------------------------------------------------------------------------------------|
 | main.c/main.h     | The main function and libraries that will be used by the whole program                   |
-| jobs.txt          | Text file holding all jobs to be executed; see "Dispatch List"                                    |
+| jobs.txt          | Example text file holding all jobs to be executed; see "Dispatch List"                                    |
 | loader.c/loader.h | Loads jobs from jobs.txt and puts them in dispatch queue on arrival time                 |
 | heap.c/heap.h     | Adds functionality for heaps; used in loader.c                                           |
 | queue.c/queue.h   | Adds functionality for queues; used to represent waiting queues in the dispatcher system |
 | LTscheduler.c/LTscheduler.h | Takes jobs from dispatch queue and sorts them into the real-time queue or user job queue based on priority |
 | MTscheduler.c/MTscheduler.h | Takes jobs from user job queue and places them in priority queues based on priority |
 | dispatcher.c/dispatcher.h | Simulates a program running on the CPU |
+| STscheduler.c/STscheduler.h | Checks for jobs in real-time queue and priority queues, then if enough resources are available, runs the process via dispatcher.exe, and swaps processes based on their scheduling algorithms |
 
 ## Lab Manual
 The Hypothetical Operating System Testbed (HOST) is a multiprogramming system with a
